@@ -1,0 +1,39 @@
+version: '3.7'
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: weather_dw
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  airflow:
+    image: apache/airflow:2.6.3
+    environment:
+      AIRFLOW__CORE__EXECUTOR: CeleryExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:postgres@postgres:5432/weather_dw
+      AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://postgres:postgres@postgres:5432/weather_dw
+      AIRFLOW__CELERY__BROKER_URL: redis://redis:6379/0
+      _PIP_ADDITIONAL_REQUIREMENTS: 'pandas,requests,sqlalchemy,psycopg2-binary,python-dotenv,pyarrow'
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ../dags:/opt/airflow/dags
+      - ../scripts:/opt/airflow/scripts
+      - ../data:/opt/airflow/data
+    ports:
+      - "8080:8080"
+    command: webserver
+
+volumes:
+  postgres_data:
