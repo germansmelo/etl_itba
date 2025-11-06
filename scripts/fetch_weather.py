@@ -1,8 +1,9 @@
 from typing import Any, Dict
 import requests
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timezone
 from .utils import log_step
+
 
 @log_step
 def fetch_weather(latitude: float = -34.61, longitude: float = -58.38) -> Dict[str, Any]:
@@ -37,5 +38,5 @@ def weather_to_df(data: Dict[str, Any]) -> pd.DataFrame:
     df['city'] = data.get('timezone', 'Unknown')
     df['latitude'] = data.get('latitude')
     df['longitude'] = data.get('longitude')
-    df['date_extracted'] = datetime.utcnow()
+    df["date_extracted"] = datetime.now(timezone.utc)
     return df

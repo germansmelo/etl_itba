@@ -1,4 +1,5 @@
 version: '3.7'
+
 services:
   postgres:
     image: postgres:15
@@ -16,14 +17,20 @@ services:
     ports:
       - "6379:6379"
 
-  airflow:
+  airflow-webserver:
     image: apache/airflow:2.6.3
     environment:
       AIRFLOW__CORE__EXECUTOR: CeleryExecutor
-      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:postgres@postgres:5432/weather_dw
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:postgres@postgres:5432/weather_dw
       AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://postgres:postgres@postgres:5432/weather_dw
       AIRFLOW__CELERY__BROKER_URL: redis://redis:6379/0
-      _PIP_ADDITIONAL_REQUIREMENTS: 'pandas,requests,sqlalchemy,psycopg2-binary,python-dotenv,pyarrow'
+      _PIP_ADDITIONAL_REQUIREMENTS: >
+        pandas
+        requests
+        sqlalchemy
+        psycopg2-binary
+        python-dotenv
+        pyarrow
     depends_on:
       - postgres
       - redis
@@ -34,6 +41,40 @@ services:
     ports:
       - "8080:8080"
     command: webserver
+
+  airflow-scheduler:
+    image: apache/airflow:2.6.3
+    environment:
+      AIRFLOW__CORE__EXECUTOR: CeleryExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:postgres@postgres:5432/weather_dw
+      AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://postgres:postgres@postgres:5432/weather_dw
+      AIRFLOW__CELERY__BROKER_URL: redis://redis:6379/0
+    depends_on:
+      - postgres
+      - redis
+      - airflow-webserver
+    volumes:
+      - ../dags:/opt/airflow/dags
+      - ../scripts:/opt/airflow/scripts
+      - ../data:/opt/airflow/data
+    command: scheduler
+
+  airflow-worker:
+    image: apache/airflow:2.6.3
+    environment:
+      AIRFLOW__CORE__EXECUTOR: CeleryExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:postgres@postgres:5432/weather_dw
+      AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://postgres:postgres@postgres:5432/weather_dw
+      AIRFLOW__CELERY__BROKER_URL: redis://redis:6379/0
+    depends_on:
+      - postgres
+      - redis
+      - airflow-webserver
+    volumes:
+      - ../dags:/opt/airflow/dags
+      - ../scripts:/opt/airflow/scripts
+      - ../data:/opt/airflow/data
+    command: celery worker
 
 volumes:
   postgres_data:
