@@ -3,7 +3,7 @@ from airflow.operators.python import PythonOperator
 from airflow.models import Variable
 from datetime import datetime, timedelta
 import sys
-sys.path.insert(0, "/opt/airflow")
+
 
 from scripts.fetch_weather import fetch_weather, weather_to_df
 from scripts.transform_weather import transform_weather

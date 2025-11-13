@@ -67,8 +67,3 @@ Este proyecto usa PostgreSQL local como entorno equivalente a Redshift. Las sent
 - `make test` -> corre pytest
 - `make stop` -> baja los servicios
 
-## Buenas prácticas
-- NO subir credenciales reales.
-- Usar variables de Airflow para parametrizar lat/lon.
-- Evitar XComs con payloads grandes en producción (usar S3/MinIO).
-

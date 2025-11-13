@@ -1,28 +1,23 @@
-from typing import Any
 import pandas as pd
 
-def transform_weather(df: pd.DataFrame) -> pd.DataFrame:
-    """Clean and enrich weather data.
+def transform_weather(df):
+    "Limpia y enriquece los datos meteorológicos."
+    # Elimina filas sin valor de temperatura
+    df = df.dropna(subset=["temperature"]).copy()
 
-    Args:
-        df (pd.DataFrame): Raw weather dataframe.
+    # Redondea las columnas numéricas a un decimal
+    for col in ["temperature", "humidity", "wind_speed"]:
+        df[col] = df[col].round(1)
 
-    Returns:
-        pd.DataFrame: Transformed dataframe with derived columns.
-    """
-    df = df.copy()
-    # Drop rows without temperature
-    df = df.dropna(subset=["temperature"])
-    # Round numeric columns
-    df["temperature"] = df["temperature"].round(1)
-    df["humidity"] = df["humidity"].round(1)
-    df["wind_speed"] = df["wind_speed"].round(1)
-    # Derived category
+    # Crea una categoría de temperatura (frío, templado, cálido)
     df["temp_category"] = pd.cut(
         df["temperature"],
         bins=[-50, 10, 25, 50],
-        labels=["Cold", "Mild", "Hot"]
+        labels=["Frío", "Templado", "Cálido"]
     )
-    # Example additional transform: flag high wind
+
+    # Agrega una bandera para indicar viento fuerte
     df["high_wind_flag"] = (df["wind_speed"] > 20).astype(int)
+
     return df
+

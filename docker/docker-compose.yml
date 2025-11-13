@@ -1,8 +1,9 @@
-version: '3.7'
+version: '3.8'
 
 services:
   postgres:
     image: postgres:15
+    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -11,6 +12,20 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    ports:
+    - "80:80"
+    depends_on:
+    - postgres
+    volumes:
+    - pgadmin_data:/var/lib/pgadmin
+            
 
   redis:
     image: redis:7
@@ -24,6 +39,7 @@ services:
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:postgres@postgres:5432/weather_dw
       AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://postgres:postgres@postgres:5432/weather_dw
       AIRFLOW__CELERY__BROKER_URL: redis://redis:6379/0
+      PYTHONPATH: /opt/airflow
       _PIP_ADDITIONAL_REQUIREMENTS: >
         pandas
         requests
@@ -49,6 +65,7 @@ services:
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:postgres@postgres:5432/weather_dw
       AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://postgres:postgres@postgres:5432/weather_dw
       AIRFLOW__CELERY__BROKER_URL: redis://redis:6379/0
+      PYTHONPATH: /opt/airflow
     depends_on:
       - postgres
       - redis
@@ -66,6 +83,7 @@ services:
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:postgres@postgres:5432/weather_dw
       AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://postgres:postgres@postgres:5432/weather_dw
       AIRFLOW__CELERY__BROKER_URL: redis://redis:6379/0
+      PYTHONPATH: /opt/airflow
     depends_on:
       - postgres
       - redis

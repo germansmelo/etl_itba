@@ -1,18 +1,22 @@
 import functools
 import logging
-from typing import Callable, TypeVar
 
-Func = TypeVar("Func", bound=Callable)
-
+# Configura el sistema de logs para mostrar mensajes con hora, nivel e información
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
-def log_step(func: Func) -> Func:
-    """Decorator that logs start and end of a function."""
+def log_step(func):
+ #Decorador que registra el inicio y fin de la ejecución de una función.
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        logger.info(f"Starting {func.__name__}()")
+        # Muestra un mensaje antes de ejecutar la función
+        logger.info(f"Iniciando {func.__name__}()")
+        
         result = func(*args, **kwargs)
-        logger.info(f"Finished {func.__name__}()")
+        
+        # Muestra un mensaje al finalizar la ejecución
+        logger.info(f"Finalizó {func.__name__}()")
         return result
-    return wrapper  # type: ignore
+
+    return wrapper
+
