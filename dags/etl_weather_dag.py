@@ -39,7 +39,7 @@ def task_load(ti):
 
 with DAG(
     "etl_weather_pipeline",
-    start_date=datetime(2025, 1, 1),
+    start_date=datetime(2024, 1, 1),
     schedule_interval="@daily",
     catchup=False,
     default_args=default_args
