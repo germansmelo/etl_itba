@@ -8,6 +8,7 @@ def test_transform_weather_adds_category_and_flag():
         "temperature": [20.3],
         "humidity": [60.0],
         "wind_speed": [10.0],
+        "precipitation": [1.2],
         "city": ["Buenos Aires"],
         "latitude": [-34.61],
         "longitude": [-58.38],
@@ -31,3 +32,7 @@ def test_transform_weather_adds_category_and_flag():
     assert transformed["temperature"].iloc[0] == 20.3
     assert transformed["humidity"].iloc[0] == 60.0
     assert transformed["wind_speed"].iloc[0] == 10.0
+
+    # Verifica columna 'is_raining'
+    assert "is_raining" in transformed.columns, "La columna 'is_raining' no fue creada."
+    assert bool(transformed["is_raining"].iloc[0]) is True, "El valor de 'is_raining' debería ser True cuando hay precipitación."

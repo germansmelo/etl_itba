@@ -1,7 +1,7 @@
 import pandas as pd
 
 def transform_weather(df):
-    "Limpia y enriquece los datos meteorológicos."
+
     # Elimina filas sin valor de temperatura
     df = df.dropna(subset=["temperature"]).copy()
 
@@ -18,6 +18,9 @@ def transform_weather(df):
 
     # Agrega una bandera para indicar viento fuerte
     df["high_wind_flag"] = (df["wind_speed"] > 20).astype(int)
+    # Agrega columna booleana para indicar si está lloviendo
+    df["is_raining"] = df.get("precipitation", 0) > 0
+    
 
     return df
 
