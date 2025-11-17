@@ -25,9 +25,16 @@ def task_fetch(ti):
 
 def task_transform(ti):
     raw = ti.xcom_pull(task_ids="fetch", key="raw_weather")
+
     df = weather_to_df(raw)
     df_transformed = transform_weather(df)
-    ti.xcom_push(key="weather_df", value=df_transformed.to_dict(orient="records"))
+    for col in df_transformed.select_dtypes(include=["datetime64[ns]", "datetime64[ns, UTC]"]).columns:
+        df_transformed[col] = df_transformed[col].astype(str)
+    ti.xcom_push(
+        key="weather_df",
+        value=df_transformed.to_dict(orient="records")
+    )
+
 
 def task_load(ti):
     create_tables()

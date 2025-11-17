@@ -1,4 +1,4 @@
-from scripts.fetch_weather import fetch_weather, weather_to_df
+from docker.dags.scripts.fetch_weather import fetch_weather, weather_to_df
 
 import pytest
 

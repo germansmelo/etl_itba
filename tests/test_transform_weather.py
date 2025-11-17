@@ -1,5 +1,5 @@
 import pandas as pd
-from scripts.transform_weather import transform_weather
+from docker.dags.scripts.transform_weather import transform_weather
 
 def test_transform_weather_adds_category_and_flag():
     # Crea un DataFrame de ejemplo similar al esperado
