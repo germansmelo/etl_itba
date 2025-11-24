@@ -5,22 +5,24 @@ Este proyecto implementa un pipeline ETL para obtener datos meteorológicos, pro
 # Contenido del Repositorio
 
 
+```
 etl_itba/
-├── dags/ # DAG de Airflow para orquestar el pipeline
-├── scripts/ # Scripts Python con funciones ETL
-├── tests/ # Pruebas unitarias con Pytest
-├── docker/ # Configuración para levantar la infraestructura con Docker
-├── config/ # Configuración de Airflow (e.g. airflow.cfg, logging)
-├── logs/ # Logs generados durante la ejecución del pipeline
-├── plugins/ # Plugins personalizados para Airflow (vacío por defecto)
+├── dags/                  # DAG de Airflow para orquestar el pipeline
+├── scripts/               # Scripts Python con funciones ETL
+├── tests/                 # Pruebas unitarias con Pytest
+├── docker/                # Configuración para levantar la infraestructura con Docker
+├── config/                # Configuración de Airflow (e.g. airflow.cfg, logging)
+├── logs/                  # Logs generados durante la ejecución del pipeline
+├── plugins/               # Plugins personalizados para Airflow (vacío por defecto)
 ├── .github/
-│ └── workflows/
-│ └── ci.yml # Workflow de GitHub Actions para testeo automático
-├── Makefile # Comandos útiles para desarrollo y despliegue
-├── requirements.txt # Dependencias del proyecto
-├── pytest.ini # Configuración de Pytest
-├── .gitignore # Archivos y carpetas a ignorar por Git
-└── README.md # Este archivo
+│   └── workflows/
+│       └── ci.yml         # Workflow de GitHub Actions para testeo automático
+├── Makefile               # Comandos útiles para desarrollo y despliegue
+├── requirements.txt       # Dependencias del proyecto
+├── pytest.ini             # Configuración de Pytest
+├── .gitignore             # Archivos a ignorar por Git
+└── README.md              # Este archivo
+```
 
 # API
 
