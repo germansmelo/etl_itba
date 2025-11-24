@@ -1,4 +1,5 @@
 import pandas as pd
+from airflow.models import Variable
 
 def transform_weather(df):
 
@@ -9,18 +10,31 @@ def transform_weather(df):
     for col in ["temperature", "humidity", "wind_speed"]:
         df[col] = df[col].round(1)
 
-    # Crea una categoría de temperatura (frío, templado, cálido)
+    # Bins de temperatura (Parametrizables)
+    default_bins = "[-50, 10, 25, 50]"
+    default_labels = "['Frío', 'Templado', 'Cálido']"
+
+    # Airflow Variables permiten cambiar fácilmente los bins desde la UI
+    bins = Variable.get("temp_bins", default_var=default_bins)
+    labels = Variable.get("temp_labels", default_var=default_labels)
+
+    # Convertir texto → listas reales
+    bins = eval(bins)
+    labels = eval(labels)
+
     df["temp_category"] = pd.cut(
         df["temperature"],
-        bins=[-50, 10, 25, 50],
-        labels=["Frío", "Templado", "Cálido"]
+        bins=bins,
+        labels=labels,
+        include_lowest=True
     )
 
-    # Agrega una bandera para indicar viento fuerte
-    df["high_wind_flag"] = (df["wind_speed"] > 20).astype(int)
-    # Agrega columna booleana para indicar si está lloviendo
+    wind_threshold = float(Variable.get("wind_threshold", default_var="20"))
+
+    df["high_wind_flag"] = (df["wind_speed"] > wind_threshold).astype(int)
+
+   
     df["is_raining"] = df.get("precipitation", 0) > 0
-    
 
     return df
 
